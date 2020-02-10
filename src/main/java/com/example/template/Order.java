@@ -49,7 +49,7 @@ public class Order {
             price = jsonObject.get("price").getAsInt();
             productName = jsonObject.get("name").getAsString();
             if( jsonObject.get("stock").getAsInt() < getQuantity()){
-                throw new OrderException("No Available stock!");
+//                throw new OrderException("No Available stock!");
             }
 
 
@@ -61,7 +61,7 @@ public class Order {
             price = product.getPrice();
             productName = product.getName();
             if( product.getStock() < getQuantity()){
-                throw new OrderException("No Available stock!");
+//                throw new OrderException("No Available stock!");
             }
         }
         this.setPrice(price);

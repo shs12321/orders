@@ -20,6 +20,8 @@ public class OrderService {
 
     @Autowired
     private ProductRepository productRepository;
+    @Autowired
+    private OrderRepository orderRepository;
 
     /**
      * 상품 변경이 발생할때마다, 상품정보를 저장해 놓음
@@ -36,6 +38,21 @@ public class OrderService {
                 product.setName(productChanged.getProductName());
                 product.setPrice(productChanged.getProductPrice());
                 productRepository.save(product);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    @StreamListener(KafkaProcessor.INPUT)
+    public void onProductOutOfStock(@Payload ProductOutOfStock productOutOfStock) {
+        try {
+            if (productOutOfStock.isMe()) {
+                System.out.println("##### listener : " + productOutOfStock.toJson());
+                Optional<Order> orderOptional = orderRepository.findById(productOutOfStock.getOrderId());
+                Order order = orderOptional.get();
+                order.setState("OrderCancelled");
+                orderRepository.save(order);
             }
         }catch (Exception e){
             e.printStackTrace();
